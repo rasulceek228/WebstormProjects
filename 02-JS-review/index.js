@@ -224,12 +224,12 @@ const adventureBooks = books
     .map(book => book.title) + " are adventure books.";
 
 
-const sumOfPages = books.reduce((total,book) => total + book.pages,  0);
+const sumOfPages = books.reduce((total, book) => total + book.pages, 0);
 console.log(sumOfPages);
 
-const {pages} =  books;
+const {pages} = books;
 
-const sortedBooksByNumOfPages = books.toSorted((a,b) => b.pages - a.pages);
+const sortedBooksByNumOfPages = books.toSorted((a, b) => b.pages - a.pages);
 const sortedBooks = sortedBooksByNumOfPages.map(book => book.title + " has " + book.pages + " pages.");
 
 console.log(sortedBooks);
