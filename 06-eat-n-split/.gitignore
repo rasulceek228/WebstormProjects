@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-03-piiza-menu/node_modules
 
 # testing
 /coverage
