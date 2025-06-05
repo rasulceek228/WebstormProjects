@@ -1,4 +1,4 @@
-export default function ListOfMovie({ movies }) {
+export default function ListOfMovies({ movies }) {
   return (
     <ul className="list">
       {movies?.map((movie) => (

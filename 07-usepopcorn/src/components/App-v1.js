@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Nav from "./Nav";
 import Box from "./Box";
 import ListOfMovies from "./ListOfMovies";
@@ -52,38 +52,10 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
-let apiMoviesData = [];
-const KEY = "9e2714ed";
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=interstellar`,
-        );
-
-        if (!res.ok)
-          throw new Error("Something went wrong with fetching movies");
-
-        const data = await res.json();
-        setMovies(data.Search);
-      } catch (err) {
-        console.error(err.message);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchMovies();
-  }, []);
 
   return (
     <>
@@ -92,9 +64,7 @@ export default function App() {
       </Nav>
       <Main>
         <Box>
-          {isLoading && <Loader />}
-          {!isLoading && !error && <ListOfMovies movies={movies} />}
-          {error && <Error error={error} />}
+          <ListOfMovies movies={movies} />
         </Box>
 
         <Box>
@@ -112,12 +82,4 @@ function NumResults({ movies }) {
       Found <strong>{movies.length}</strong> results
     </p>
   );
-}
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
-}
-
-function Error({ error }) {
-  return <p className="error">{error}</p>;
 }
