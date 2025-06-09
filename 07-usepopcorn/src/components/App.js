@@ -5,7 +5,9 @@ import ListOfMovies from "./ListOfMovies";
 import Summary from "./Summary";
 import ListWatchedMovies from "./ListWatchedMovies";
 import Main from "./Main";
-import StarRating from "./StarRating";
+
+import MovieDetails from "./MovieDetails";
+import Loader from "./Loader";
 
 const tempMovieData = [
   {
@@ -56,7 +58,7 @@ const tempWatchedData = [
 const KEY = "9e2714ed";
 
 export default function App() {
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,13 +73,24 @@ export default function App() {
     setSelectedId(null);
   }
 
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
+  }
+
+  function handleDeleteWatched(id) {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  }
+
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fetchMovies() {
       try {
         setIsLoading(true);
         setError("");
         const res = await fetch(
           `http://www.omdbapi.com/?&apikey=${KEY}&s=${query}`,
+          { signal: controller.signal },
         );
 
         if (!res.ok)
@@ -87,8 +100,11 @@ export default function App() {
         if (data.Response === "False") throw new Error("Movie not found");
 
         setMovies(data.Search);
+        setError("");
       } catch (err) {
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -99,8 +115,12 @@ export default function App() {
       setMovies([]);
       return;
     }
-
+    handleCloseDetails();
     fetchMovies();
+
+    return function () {
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -123,13 +143,17 @@ export default function App() {
             <MovieDetails
               selectedMovie={selectedId}
               onClose={handleCloseDetails}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
+              onAddWatched={handleAddWatched}
+              watched={watched}
+              onDeleteMovie={handleDeleteWatched}
             />
           ) : (
             <>
               <Summary watched={watched} />
-              <ListWatchedMovies watched={watched} />
+              <ListWatchedMovies
+                watched={watched}
+                onDeleteMovie={handleDeleteWatched}
+              />
             </>
           )}
         </Box>
@@ -144,10 +168,6 @@ function NumResults({ movies }) {
       Found <strong>{movies?.length}</strong> results
     </p>
   );
-}
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
 }
 
 function Error({ error }) {
@@ -168,76 +188,5 @@ function Search({ query, setQuery }) {
       value={query}
       onChange={(e) => setQuery(e.target.value)}
     />
-  );
-}
-
-function MovieDetails({ selectedMovie, onClose }) {
-  const [movie, setMovie] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-
-  const {
-    Title: title,
-    Year: year,
-    Poster: poster,
-    imdbRating,
-    Plot: plot,
-    Released: released,
-    Actors: actors,
-    Director: director,
-    Genre: genre,
-    Runtime: runtime,
-  } = movie;
-
-  useEffect(() => {
-    async function getMovieDetails() {
-      setIsLoading(true);
-      const res1 = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedMovie}`,
-      );
-      const data1 = await res1.json();
-      setMovie(data1);
-      setIsLoading(false);
-    }
-
-    getMovieDetails();
-  }, [selectedMovie]);
-
-  return (
-    <div className="details">
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <header>
-            <button className="btn-back" onClick={onClose}>
-              &larr;
-            </button>
-            <img src={poster} alt={`Poster of ${movie} movie`} />
-            <div className="details-overview">
-              <h2>{title}</h2>
-              <p>
-                {released} &bull; {runtime}
-              </p>
-              <p>{genre}</p>
-              <p>
-                <span>⭐</span>
-                {imdbRating} IMDB rating
-              </p>
-            </div>
-          </header>
-
-          <section>
-            <div className="rating">
-              <StarRating size={24} maxRating={10} />
-            </div>
-            <p>
-              <em>{plot}</em>
-            </p>
-            <p>Starring {actors}</p>
-            <p>Directed by {director}</p>
-          </section>
-        </>
-      )}
-    </div>
   );
 }

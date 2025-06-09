@@ -8,6 +8,7 @@ StarRating.propTypes = {
   size: PropTypes.number,
   messages: PropTypes.array,
   className: PropTypes.string,
+  onSetRating: PropTypes.func,
 };
 
 const container = {
