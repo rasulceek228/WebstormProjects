@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Nav from "./Nav";
 import Box from "./Box";
 import ListOfMovies from "./ListOfMovies";
@@ -8,17 +8,16 @@ import Main from "./Main";
 
 import MovieDetails from "./MovieDetails";
 import Loader from "./Loader";
-import { useMovies } from "./useMovies";
-import { useStoreLocal } from "./useStoreLocal";
-import { useKey } from "./useKey";
 
 const KEY = "9e2714ed";
 
 export default function App() {
   const [query, setQuery] = useState("");
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const { movies, isLoading, error } = useMovies(query);
-  const [watched, setWatched] = useStoreLocal([], "watched");
 
   function handleSelectedMovies(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
@@ -35,6 +34,48 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        setError("");
+        const res = await fetch(
+          `http://www.omdbapi.com/?&apikey=${KEY}&s=${query}`,
+          { signal: controller.signal },
+        );
+
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching movies");
+
+        const data = await res.json();
+        if (data.Response === "False") throw new Error("Movie not found");
+
+        setMovies(data.Search);
+        setError("");
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (query.length < 3) {
+      setError("");
+      setMovies([]);
+      return;
+    }
+    handleCloseDetails();
+    fetchMovies();
+
+    return function () {
+      controller.abort();
+    };
+  }, [query]);
 
   return (
     <>
@@ -93,14 +134,6 @@ function Error({ error }) {
 }
 
 function Search({ query, setQuery }) {
-  const inputEl = useRef(null);
-
-  useKey("Enter", function () {
-    if (document.activeElement === inputEl.current) return;
-    inputEl.current.focus?.();
-    setQuery("");
-  });
-
   return (
     <input
       className="search"
@@ -108,7 +141,6 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
-      ref={inputEl}
     />
   );
 }

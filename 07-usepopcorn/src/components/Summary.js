@@ -8,7 +8,7 @@ export default function Summary({ watched }) {
   const avgUserRating = average(
     watched.map((movie) => movie.userRating),
   ).toFixed(2);
-  const avgRuntime = average(watched.map((movie) => movie.runtime));
+  const avgRuntime = average(watched.map((movie) => movie.runtime)).toFixed(2);
 
   return (
     <div className="summary">
