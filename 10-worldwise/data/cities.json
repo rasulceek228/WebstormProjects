@@ -17,7 +17,7 @@
       "country": "Spain",
       "emoji": "🇪🇸",
       "date": "2027-07-15T08:22:53.976Z",
-      "notes": "",
+      "notes": "Very Gorgeous city",
       "position": {
         "lat": 40.46635901755316,
         "lng": -3.7133789062500004
@@ -37,28 +37,64 @@
       "id": 98443197
     },
     {
-      "cityName": "Lisbon",
-      "country": "Portugal",
-      "emoji": "🇵🇹",
-      "date": "2027-10-31T15:59:59.138Z",
-      "notes": "My favorite city so far!",
+      "cityName": "Venice",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "date": "2025-06-23T10:33:18.673Z",
+      "notes": "Very gorgeous place \n",
       "position": {
-        "lat": 38.727881642324164,
-        "lng": -9.140900099907554
+        "lat": "45.43700828867391",
+        "lng": "12.354125976562502"
       },
-      "id": 41234321
+      "id": 98443198
     },
     {
-      "cityName": "Barcelona",
-      "country": "Spain",
-      "emoji": "🇪🇸",
-      "date": "2027-07-15T08:22:53.976Z",
-      "notes": "",
+      "cityName": "Ravenna",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "date": "2025-06-23T10:33:57.932Z",
+      "notes": "test",
       "position": {
-        "lat": 40.46635901755316,
-        "lng": -3.7133789062500004
+        "lat": "44.37883975908861",
+        "lng": "12.271728515625002"
       },
-      "id": 52435324
+      "id": 98443199
+    },
+    {
+      "cityName": "Venice",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "date": "2025-06-24T11:02:02.497Z",
+      "notes": "very great city",
+      "position": {
+        "lat": "45.43411732855592",
+        "lng": "12.332839965820314"
+      },
+      "id": 98443200
+    },
+    {
+      "cityName": "Milan",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "date": "2025-06-24T11:02:19.561Z",
+      "notes": "crowded but cool\n",
+      "position": {
+        "lat": "45.464946600971466",
+        "lng": "9.196929931640627"
+      },
+      "id": 98443201
+    },
+    {
+      "cityName": "Rome",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "date": "2025-06-24T11:03:29.578Z",
+      "notes": "historical",
+      "position": {
+        "lat": "41.89001042401827",
+        "lng": "12.485961914062502"
+      },
+      "id": 98443202
     }
   ]
 }
