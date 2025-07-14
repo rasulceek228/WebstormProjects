@@ -44,7 +44,7 @@ function PostProvider({ children }) {
       setSearchQuery,
     };
   }, [searchedPosts, searchQuery]);
-  //2) Provide the value to the child components
+  //2) Provide the value to the child _components
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 }
 
